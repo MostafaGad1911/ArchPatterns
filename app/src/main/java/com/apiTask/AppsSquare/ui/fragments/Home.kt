@@ -5,56 +5,84 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.apiTask.AppsSquare.Adapter.DataAdapter
+import com.apiTask.AppsSquare.Model.Data
+import com.apiTask.AppsSquare.PostsPresenter.PostPresenter
+import com.apiTask.AppsSquare.PostsPresenter.PostsVew
 import com.apiTask.AppsSquare.R
+import com.apiTask.AppsSquare.ViewModel.PostsVM
+import kotlinx.coroutines.flow.Flow
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class Home : Fragment() , PostsVew {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [Home.newInstance] factory method to
- * create an instance of this fragment.
- */
-class Home : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var myRecycler : RecyclerView
+    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var data : ArrayList<Data>
+    private lateinit var dataAdapter : DataAdapter
+    private lateinit var constraintLayout : ConstraintLayout
+    private lateinit var progressBar: ProgressBar
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val postsVM: PostsVM by viewModels()
+    lateinit var postsPresenter: PostPresenter
+
+    lateinit var flow: Flow<Int>
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        postsPresenter = PostPresenter(this)
+        postsPresenter.getPosts()
+        Toast.makeText(requireActivity() , "Test" , Toast.LENGTH_LONG).show()
+
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
+
+    }
+    override fun onPause() {
+        super.onPause()
+        postsVM.postsLiveData.removeObservers(this)
+        postsVM.errorLiveData.removeObservers(this)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Home.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Home().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+    private fun initView(vew:View){
+        myRecycler= vew?.findViewById(R.id.my_recycler)!!
+        progressBar = vew?.findViewById(R.id.progress)!!
+        constraintLayout = vew?.findViewById(R.id.layout)!!
     }
+
+    private fun install(){
+
+        layoutManager = GridLayoutManager(requireActivity(),2)
+        myRecycler.layoutManager = layoutManager
+        dataAdapter = DataAdapter(data,requireActivity())
+        myRecycler.adapter = dataAdapter
+    }
+
+    override fun setPosts(dataList: ArrayList<Data>) {
+        data = dataList
+        install()
+        constraintLayout.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+
+    }
+
+    override fun setError(errorMessage: String) {
+        Toast.makeText(requireActivity() , errorMessage , Toast.LENGTH_LONG).show()
+    }
+
 }

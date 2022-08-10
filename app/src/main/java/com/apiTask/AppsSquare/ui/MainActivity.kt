@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.apiTask.AppsSquare.Adapter.DataAdapter
@@ -26,69 +28,25 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import javax.security.auth.callback.Callback
 
-class MainActivity : AppCompatActivity()  , PostsVew{
-    lateinit var myRecycler : RecyclerView
-    lateinit var layoutManager: GridLayoutManager
-    lateinit var data : ArrayList<Data>
-    lateinit var dataAdapter : DataAdapter
-    lateinit var constraintLayout : ConstraintLayout
-    lateinit var progressBar: ProgressBar
-
-    val postsVM:PostsVM  by viewModels()
-    lateinit var postsPresenter: PostPresenter
-
-    lateinit var flow: Flow<Int>
+class MainActivity : AppCompatActivity(){
+    lateinit var controller: NavController // don't forget to initialize
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-        postsPresenter = PostPresenter(this)
-        postsPresenter.getPosts()
-
-//        postsVM.getMyPosts()
-//        postsVM.postsLiveData.observe(this , Observer {
-//            data = it
-//            install()
-//            constraintLayout.visibility = View.VISIBLE
-//            progressBar.visibility = View.GONE
-//        })
-//        postsVM.errorLiveData.observe(this , Observer {
-//            Toast.makeText(this , it , Toast.LENGTH_LONG).show()
-//        })
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        postsVM.postsLiveData.removeObservers(this)
-        postsVM.errorLiveData.removeObservers(this)
-    }
-
-
-    fun initView(){
-        myRecycler=findViewById(R.id.my_recycler)
-        progressBar = findViewById(R.id.progress)
-        constraintLayout = findViewById(R.id.layout)
-    }
-
-    fun install(){
-
-        layoutManager = GridLayoutManager(this,2)
-        myRecycler.layoutManager = layoutManager
-        dataAdapter = DataAdapter(data,this)
-        myRecycler.adapter = dataAdapter
-    }
-
-    override fun setPosts(dataList: ArrayList<Data>) {
-        data = dataList
-        install()
-        constraintLayout.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
 
     }
 
-    override fun setError(errorMessage: String) {
-        Toast.makeText(this , errorMessage , Toast.LENGTH_LONG).show()
+
+
+    private fun initView(){
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.training_graph_container) as NavHostFragment
+        val inflater = navHostFragment.navController.navInflater
+        controller = navHostFragment.navController
+        controller.navigate(R.id.homeFragment)
     }
+
+
 }

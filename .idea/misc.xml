@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MGad/Demos/ArchPatterns/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/MGad/Demos/ArchPatterns/app/src/main/res/layout/fragment_base.xml" value="0.1" />
+        <entry key="..\:/MGad/Demos/ArchPatterns/app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="..\:/MGad/Demos/ArchPatterns/app/src/main/res/layout/fragment_login.xml" value="0.1" />
+        <entry key="..\:/MGad/Demos/ArchPatterns/app/src/main/res/layout/item_view.xml" value="0.1" />
         <entry key="..\:/MGad/Projects/Api-Task/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
       </map>
     </option>

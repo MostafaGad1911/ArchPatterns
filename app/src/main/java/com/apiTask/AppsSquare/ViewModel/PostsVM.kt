@@ -24,14 +24,14 @@ class PostsVM : ViewModel() {
         val conn =  Conn.calls
         val call = conn.getData()
         call.enqueue(object : Callback<DataModel>{
-            override fun onResponse(call: Call<DataModel>?, response: Response<DataModel>?) {
-                when(response?.code()){
+            override fun onResponse(call: Call<DataModel>, response: Response<DataModel>) {
+                when(response.code()){
                     200 -> {
-                        postsMD.postValue(response.body().data!!)
+                        postsMD.postValue(response.body()?.data!!)
                     }
 
                     else -> {
-                        errorMessage.postValue(response?.errorBody()?.string())
+                        errorMessage.postValue(response.errorBody()?.string())
                     }
                 }
             }
